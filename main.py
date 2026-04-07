@@ -19,7 +19,7 @@ historico = []
 # ciclo principale del chatbot
 while True:
     # legge il messaggio dell'utente dal terminale
-    mensagem = input("Tanara: ")
+    mensagem = input("User: ")
     
     # se l'utente scrive 'sair', termina il programma
     if mensagem.lower() == "sair":
