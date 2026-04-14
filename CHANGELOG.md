@@ -1,3 +1,11 @@
+## [2026-04-14] - Design spec frontend Laravel para chatbot RAG
+
+### Aggiunto
+- Spec de design para interface web Laravel do chatbot RAG (`docs/superpowers/specs/2026-04-14-rag-laravel-frontend-design.md`)
+- Arquitetura híbrida: Flask API (porta 5000) + Laravel 12 frontend (Tabler UI + FontAwesome)
+- Definição dos endpoints Python `/api/upload` e `/api/chat`
+- Layout do chat com upload drag-and-drop, bolhas de mensagem e spinner de loading
+
 ## [1.0.0] - 2026-04-13 - Implementazione RAG chatbot
 
 ### Aggiunto
