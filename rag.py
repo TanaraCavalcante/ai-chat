@@ -14,6 +14,7 @@ from langchain_community.document_loaders import (
     TextLoader,      # lê ficheiros .txt
     PyPDFLoader,     # lê ficheiros .pdf (uma página = um Document)
     Docx2txtLoader,  # lê ficheiros .docx
+    UnstructuredExcelLoader,  # lê ficheiros .xlsx
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
@@ -58,9 +59,11 @@ def carregar_documento(caminho: str) -> list:
         loader = PyPDFLoader(caminho)
     elif extensao == ".docx":
         loader = Docx2txtLoader(caminho)
+    elif extensao == ".xlsx":
+        loader = UnstructuredExcelLoader(caminho)
     else:
         raise ValueError(
-            f"Formato '{extensao}' não suportado. Use .txt, .pdf ou .docx"
+            f"Formato '{extensao}' não suportado. Use .txt, .pdf, .docx ou .xlsx"
         )
 
     # load() lê o ficheiro e devolve a lista de Documents

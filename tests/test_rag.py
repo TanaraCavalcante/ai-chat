@@ -38,7 +38,7 @@ def test_ficheiro_nao_existe():
 
 def test_formato_nao_suportado(tmp_path):
     """Deve lançar ValueError para extensões não suportadas."""
-    ficheiro = tmp_path / "teste.xlsx"
+    ficheiro = tmp_path / "teste.csv"
     ficheiro.write_text("conteudo")
 
     with pytest.raises(ValueError):
@@ -105,3 +105,21 @@ def test_busca_contexto_devolve_texto_e_scores():
 
     # O chunk mais relevante deve mencionar o CEO
     assert "Marco Rossi" in contexto
+
+
+def test_carrega_xlsx(tmp_path):
+    """Deve carregar um ficheiro .xlsx e devolver pelo menos um Document."""
+    import openpyxl
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws['A1'] = 'Produto'
+    ws['B1'] = 'Preco'
+    ws['A2'] = 'Widget'
+    ws['B2'] = 50
+    ficheiro = tmp_path / "teste.xlsx"
+    wb.save(str(ficheiro))
+
+    docs = carregar_documento(str(ficheiro))
+
+    assert len(docs) >= 1
+    assert any('Widget' in d.page_content or '50' in d.page_content for d in docs)
