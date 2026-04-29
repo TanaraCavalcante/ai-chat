@@ -1,3 +1,13 @@
+## [2026-04-29] - Reorganização: AI-chat separado de AI-chat-frontend
+
+### Modificato
+- Movido `laravel/` para projeto separado `AI-chat-frontend/`
+- Movidos docs do frontend Laravel (`plans/2026-04-29`, `specs/2026-04-14`, `specs/2026-04-29`) para `AI-chat-frontend/`
+- Movido `.superpowers/` (brainstorm de layout/UI) para `AI-chat-frontend/`
+- `AI-chat` passa a conter somente o backend Python (Flask API + RAG)
+
+---
+
 ## [2026-04-29] - Spec e plano do frontend Laravel RAG v2
 
 ### Aggiunto
