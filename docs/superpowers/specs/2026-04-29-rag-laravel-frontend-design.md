@@ -11,9 +11,9 @@
 
 Interface web para o chatbot RAG existente (Python + Groq + FAISS). O utilizador carrega um ou mais documentos no browser, faz perguntas em linguagem natural e recebe respostas baseadas no conteúdo dos documentos.
 
-O código Python existente (`rag.py`, `main.py`) **não é alterado**. Apenas se adiciona `api.py` como camada HTTP sobre o código existente.
+O `main.py` existente **não é alterado**. O `rag.py` recebe uma alteração mínima: suporte a `.xlsx` via `UnstructuredExcelLoader`. Adiciona-se `api.py` como camada HTTP sobre o código existente.
 
-A UI está inteiramente em **italiano** (público-alvo italiano). O código-fonte (variáveis, comentários) permanece em português/inglês.
+A UI está inteiramente em **italiano** (público-alvo italiano). O código-fonte (variáveis, comentários) permanece em portugues/italiano.
 
 ---
 
@@ -34,7 +34,7 @@ settimana 08/
 ├── rag.py              (existente — sem alterações)
 ├── main.py             (existente — sem alterações)
 ├── api.py              (NOVO — Flask, porta 5000)
-├── requirements.txt    (NOVO — adiciona flask)
+├── requirements.txt    (NOVO — adiciona flask, unstructured[xlsx])
 ├── .env                (existente — sem alterações)
 ├── venv/               (existente)
 └── laravel/            (NOVO — app Laravel 12)
@@ -58,7 +58,26 @@ cd laravel && valet link ai-wtech
 
 ---
 
-## 4. Python API (`api.py`)
+## 4. Alteração em `rag.py` — suporte a Excel
+
+A função `carregar_documento` recebe um novo `elif` para `.xlsx`, usando `UnstructuredExcelLoader` do LangChain. Cada folha (sheet) do ficheiro Excel é convertida num `Document` separado.
+
+```python
+# Adicionar no topo de rag.py:
+from langchain_community.document_loaders import UnstructuredExcelLoader
+
+# Adicionar dentro de carregar_documento(), após o elif .docx:
+elif extensao == ".xlsx":
+    loader = UnstructuredExcelLoader(caminho)
+```
+
+**Dependência nova:** `unstructured[xlsx]` (instalar via `pip install "unstructured[xlsx]"`).
+
+O comportamento do chunking e embedding não muda — o Excel passa pelo mesmo pipeline do `criar_vector_store`.
+
+---
+
+## 5. Python API (`api.py`)  <!-- era §4 -->
 
 Framework: **Flask** (porta 5000, padrão Flask).
 Sem CORS — o browser nunca chama o Flask directamente.
@@ -76,7 +95,7 @@ O vector store e a lista de documentos vivem enquanto o processo Flask estiver a
 
 #### `POST /api/upload`
 
-Recebe um ficheiro multipart (`.txt`, `.pdf`, `.docx`) e um `session_id` opcional.
+Recebe um ficheiro multipart (`.txt`, `.pdf`, `.docx`, `.xlsx`) e um `session_id` opcional.
 
 **Fluxo interno:**
 1. Guarda o ficheiro em `/tmp`
@@ -100,7 +119,7 @@ Recebe um ficheiro multipart (`.txt`, `.pdf`, `.docx`) e um `session_id` opciona
 
 **Resposta `400`:**
 ```json
-{ "error": "Formato '.xlsx' non supportato. Usa .txt, .pdf o .docx" }
+{ "error": "Formato '.csv' non supportato. Usa .txt, .pdf, .docx o .xlsx" }
 ```
 
 **Resposta `413`:**
@@ -152,7 +171,7 @@ Remove a sessão de `sessions`. Chamado pelo botão "Ricomincia".
 
 ---
 
-## 5. Laravel Frontend
+## 6. Laravel Frontend
 
 ### 5.1 Stack
 
@@ -179,7 +198,7 @@ Remove a sessão de `sessions`. Chamado pelo botão "Ricomincia".
 **`index()`** — devolve a view `chat`.
 
 **`upload(Request $request)`**
-- Valida: ficheiro obrigatório, extensões `pdf,txt,docx`, máximo 20 MB
+- Valida: ficheiro obrigatório, extensões `pdf,txt,docx,xlsx`, máximo 20 MB
 - Recupera `session_id` da sessão Laravel (ou `null` se primeira vez)
 - Faz `Http::attach(...)->post(PYTHON_API_URL . '/api/upload', ['session_id' => ...])`
 - Sucesso: guarda `session_id` na sessão Laravel, devolve JSON ao JS
@@ -213,7 +232,7 @@ Três estados:
 
 **Estado 1 — Sem documentos:**
 - Badge vermelho `● Nessun documento`
-- Zona upload dashed: ícone `fa-paperclip` + "Carica documento" + "PDF · TXT · DOCX · max 20 MB"
+- Zona upload dashed: ícone `fa-paperclip` + "Carica documento" + "PDF · TXT · DOCX · XLSX · max 20 MB"
 
 **Estado 2 — Indexando (durante upload):**
 - Badge amarelo `⏳ Indicizzazione…`
@@ -228,7 +247,7 @@ Três estados:
 **Estado 3 — Com documentos:**
 - Badge verde `● N fonti attive`
 - Lista de documentos: cada item mostra ícone `fa-file` + nome + "N chunk"
-- Botão "Aggiungi fonte" (dashed, sempre visível) — máximo 5 documentos por sessão
+- Botão "Aggiungi fonte" (dashed, sempre visível) — máximo 5 documentos por sessão; aceita PDF · TXT · DOCX · XLSX
 - Botão "Ricomincia" (vermelho claro) — chama `/clear`, apaga sessão e reset da UI
 
 #### Chat area
@@ -260,7 +279,7 @@ Pill shape (`border-radius: 24px`), fundo branco, border Bootstrap:
 
 ---
 
-## 6. Tratamento de Erros
+## 7. Tratamento de Erros
 
 | Cenário | Comportamento UI |
 |---------|-----------------|
@@ -273,7 +292,7 @@ Pill shape (`border-radius: 24px`), fundo branco, border Bootstrap:
 
 ---
 
-## 7. Configuração e Arranque
+## 8. Configuração e Arranque
 
 ```bash
 # Terminal 1 — Python API
@@ -292,7 +311,7 @@ PYTHON_API_URL=http://127.0.0.1:5000
 
 ---
 
-## 8. Fora de Âmbito
+## 9. Fora de Âmbito
 
 - Autenticação / multi-utilizador
 - Persistência de sessões entre reinícios do Flask
