@@ -136,7 +136,7 @@ def main():
         )
     else:
         # Modo normal: chatbot em italiano sem documento
-        print("\n=== Chatbot in italiano ===")
+        print("\n=== Chatbot ===")
         print("Scrivi 'esci' per uscire.\n")
 
         # System prompt aberto: responde em italiano sobre qualquer tema

@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Read(//Users/tanara/**)",
-      "Bash(ls \"/Users/tanara/dev/pessoal/AI/settimana 08\"/CHANGELOG*)"
+      "Bash(ls \"/Users/tanara/dev/pessoal/AI/settimana 08\"/CHANGELOG*)",
+      "Bash(/Users/tanara/.claude/plugins/cache/superpowers-marketplace/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh --project-dir \"/Users/tanara/dev/pessoal/AI/settimana 08\")",
+      "Bash(git add *)"
     ],
     "additionalDirectories": [
       "/Users/tanara",

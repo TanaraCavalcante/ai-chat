@@ -1,3 +1,17 @@
+## [2026-04-29] - Spec e plano do frontend Laravel RAG v2
+
+### Aggiunto
+- Spec revisada do frontend Laravel (v2): multi-documento, Bootstrap 5, texto UI em italiano, suporte a `.xlsx`
+- Plano de implementação completo com 6 tasks e código completo em cada step
+- Sessão de brainstorming visual com mockups (sidebar, chat bubbles, input bar com contador "N fonti")
+
+### Modificato
+- `rag.py`: suporte a `.xlsx` via `UnstructuredExcelLoader` documentado na spec
+- `.claude/settings.json`: permissões atualizadas (brainstorm server + git add)
+- `main.py`: ajuste menor no texto do modo normal
+
+---
+
 ## [2026-04-14] - Design spec frontend Laravel para chatbot RAG
 
 ### Aggiunto
