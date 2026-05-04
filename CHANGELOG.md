@@ -1,3 +1,10 @@
+## [2026-05-04] - Aggiunto README
+
+### Aggiunto
+- `README.md`: documentazione in italiano — architettura, setup, modalità terminale (normale e RAG), endpoint API
+
+---
+
 ## [2026-05-04] - Melhoria RAG: extração PDF e embeddings multilíngues
 
 ### Modificato
