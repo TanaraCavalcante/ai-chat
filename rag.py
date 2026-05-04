@@ -10,11 +10,12 @@
 
 import os
 
+import pdfplumber
+from langchain_core.documents import Document as LCDocument
 from langchain_community.document_loaders import (
-    TextLoader,      # lê ficheiros .txt
-    PyPDFLoader,     # lê ficheiros .pdf (uma página = um Document)
-    Docx2txtLoader,  # lê ficheiros .docx
-    UnstructuredExcelLoader,  # lê ficheiros .xlsx
+    TextLoader,
+    Docx2txtLoader,
+    UnstructuredExcelLoader,
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
@@ -56,7 +57,13 @@ def carregar_documento(caminho: str) -> list:
     if extensao == ".txt":
         loader = TextLoader(caminho, encoding="utf-8")
     elif extensao == ".pdf":
-        loader = PyPDFLoader(caminho)
+        docs = []
+        with pdfplumber.open(caminho) as pdf:
+            for i, page in enumerate(pdf.pages):
+                content = (page.extract_text(layout=True) or "").strip()
+                if content:
+                    docs.append(LCDocument(page_content=content, metadata={"source": caminho, "page": i}))
+        return docs
     elif extensao == ".docx":
         loader = Docx2txtLoader(caminho)
     elif extensao == ".xlsx":
@@ -74,7 +81,7 @@ def carregar_documento(caminho: str) -> list:
 # FUNÇÃO 2: Criar vector store
 # ─────────────────────────────────────────────
 
-def criar_vector_store(docs: list, chunk_size: int = 500, chunk_overlap: int = 50):
+def criar_vector_store(docs: list, chunk_size: int = 1200, chunk_overlap: int = 150):
     """
     Transforma uma lista de Documents num vector store pesquisável (FAISS).
 
@@ -110,7 +117,7 @@ def criar_vector_store(docs: list, chunk_size: int = 500, chunk_overlap: int = 5
     # Carrega o modelo localmente (sem necessidade de API key).
     # Na primeira execução, faz download do modelo (~80 MB) para cache.
     modelo_embeddings = HuggingFaceEmbeddings(
-        model_name="all-MiniLM-L6-v2"
+        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
 
     # ── PASSO 3: FAISS ─────────────────────────────────────────────────────
@@ -124,7 +131,7 @@ def criar_vector_store(docs: list, chunk_size: int = 500, chunk_overlap: int = 5
 # FUNÇÃO 3: Buscar contexto
 # ─────────────────────────────────────────────
 
-def buscar_contexto(vector_store, pergunta: str, k: int = 3):
+def buscar_contexto(vector_store, pergunta: str, k: int = 6):
     """
     Busca os chunks mais relevantes para a pergunta dada.
 

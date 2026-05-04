@@ -1,3 +1,13 @@
+## [2026-05-04] - Melhoria RAG: extração PDF e embeddings multilíngues
+
+### Modificato
+- `rag.py`: substituído `PyPDFLoader` por `pdfplumber` com `extract_text(layout=True)` — preserva layout de laudos médicos
+- `rag.py`: embedding trocado de `all-MiniLM-L6-v2` para `paraphrase-multilingual-MiniLM-L12-v2` — suporte a italiano/português
+- `rag.py`: `chunk_size` 500→1200, `chunk_overlap` 50→150, `k` 3→6 — mais contexto por chunk, mais chunks recuperados
+- `api.py`: porta corrigida 5000→5001, `debug=False` para compatibilidade com execução em background
+
+---
+
 ## [2026-04-29] - Reorganização: AI-chat separado de AI-chat-frontend
 
 ### Modificato
