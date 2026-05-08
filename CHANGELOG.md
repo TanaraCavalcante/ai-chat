@@ -1,3 +1,11 @@
+## [2026-05-08] - Documentação técnica e suporte .docx
+
+### Aggiunto
+- `docs/apresentacao.md`: documentação técnica completa em português — arquitetura, pipeline RAG, integração Python ↔ Laravel, testes, glossário
+- `docx2txt`: dependência instalada para suporte completo a arquivos `.docx`
+
+---
+
 ## [2026-05-04] - Aggiunto README
 
 ### Aggiunto
