@@ -1,3 +1,10 @@
+## [2026-09-07] - Corretto modello Groq deprecato
+
+### Corretto
+- `api.py`, `main.py`: modello Groq `llama-3.3-70b-versatile` (dismesso, causava `404 model_not_found` su `/api/chat`) sostituito con `openai/gpt-oss-120b`
+
+---
+
 ## [2026-09-07] - Setup ambiente locale e correzione dipendenze
 
 ### Aggiunto

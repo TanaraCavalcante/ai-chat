@@ -104,7 +104,7 @@ def chat():
     ]
 
     resposta_groq = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=historico,
     )
     resposta = resposta_groq.choices[0].message.content

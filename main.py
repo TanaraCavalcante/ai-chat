@@ -102,7 +102,7 @@ def chat(historico: list) -> str:
       Texto da resposta do modelo
     """
     resposta = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=historico,
     )
     return resposta.choices[0].message.content
