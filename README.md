@@ -31,16 +31,29 @@ Modello embeddings: `paraphrase-multilingual-MiniLM-L12-v2` (locale, supporta it
 
 ## Setup
 
+**macOS / Linux:**
 ```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Crea il file `.env`:
+**Windows (PowerShell):**
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+Se `Activate.ps1` viene bloccato dalla policy di esecuzione:
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Crea il file `.env` (puoi copiare `.env.example`):
 ```
 groq_api_key=la_tua_chiave
 ```
+Chiave disponibile su [console.groq.com/keys](https://console.groq.com/keys).
 
 ---
 
@@ -48,10 +61,21 @@ groq_api_key=la_tua_chiave
 
 ### 1. API Flask (per il frontend)
 
+**Avviare:**
 ```bash
+# macOS/Linux: source venv/bin/activate
+# Windows:     venv\Scripts\Activate.ps1
 python api.py
 # server su http://localhost:5001
 ```
+
+**Fermare:**
+- Terminale in primo piano → `Ctrl+C`
+- Processo in background (Windows) → trova il PID e terminalo:
+  ```powershell
+  netstat -ano | findstr :5001
+  Stop-Process -Id <PID>
+  ```
 
 ### 2. Terminale — modalità normale
 
