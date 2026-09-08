@@ -56,14 +56,18 @@ def upload():
         if tmp_path and os.path.exists(tmp_path):
             os.unlink(tmp_path)
 
+    doc_id = str(uuid.uuid4())
+
     if session_id and session_id in sessions:
         sessions[session_id]['store'].merge_from(new_store)
-        sessions[session_id]['docs'].append({"name": filename, "chunks": n_chunks})
+        sessions[session_id]['docs'].append({"doc_id": doc_id, "name": filename, "chunks": n_chunks})
+        sessions[session_id]['docs_raw'][doc_id] = docs
     else:
         session_id = str(uuid.uuid4())
         sessions[session_id] = {
             "store": new_store,
-            "docs": [{"name": filename, "chunks": n_chunks}],
+            "docs": [{"doc_id": doc_id, "name": filename, "chunks": n_chunks}],
+            "docs_raw": {doc_id: docs},
         }
 
     session = sessions[session_id]
@@ -71,6 +75,7 @@ def upload():
 
     return jsonify({
         "session_id": session_id,
+        "doc_id": doc_id,
         "filename": filename,
         "chunks": n_chunks,
         "total_docs": len(session["docs"]),
@@ -119,6 +124,34 @@ def chat():
     ]
 
     return jsonify({"resposta": resposta, "chunks_usados": chunks_usados})
+
+
+@app.route('/api/remove-doc', methods=['POST'])
+def remove_doc():
+    data = request.get_json() or {}
+    session_id = data.get('session_id')
+    doc_id = data.get('doc_id')
+
+    if not session_id or session_id not in sessions:
+        return jsonify({"error": "Sessione non trovata."}), 404
+
+    session = sessions[session_id]
+    if not doc_id or doc_id not in session['docs_raw']:
+        return jsonify({"error": "Documento non trovato."}), 404
+
+    del session['docs_raw'][doc_id]
+    session['docs'] = [d for d in session['docs'] if d['doc_id'] != doc_id]
+
+    remaining_docs = [doc for docs in session['docs_raw'].values() for doc in docs]
+
+    if not remaining_docs:
+        del sessions[session_id]
+        return jsonify({"ok": True, "total_docs": 0})
+
+    new_store, _ = criar_vector_store(remaining_docs)
+    session['store'] = new_store
+
+    return jsonify({"ok": True, "total_docs": len(session['docs'])})
 
 
 @app.route('/api/clear', methods=['POST'])

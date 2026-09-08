@@ -111,6 +111,7 @@ Carica un documento e crea (o estende) una sessione.
 ```json
 {
   "session_id": "uuid",
+  "doc_id": "uuid",
   "filename": "doc.pdf",
   "chunks": 42,
   "total_docs": 1,
@@ -134,6 +135,19 @@ Invia una domanda sulla sessione attiva.
     { "texto": "...", "score": 0.31, "fonte": "doc.pdf" }
   ]
 }
+```
+
+### `POST /api/remove-doc`
+Rimuove un documento dalla sessione e ricalcola l'indice FAISS senza di esso. Se era l'ultimo documento, elimina la sessione.
+
+**Body:**
+```json
+{ "session_id": "uuid", "doc_id": "uuid" }
+```
+
+**Risposta:**
+```json
+{ "ok": true, "total_docs": 0 }
 ```
 
 ### `POST /api/clear`

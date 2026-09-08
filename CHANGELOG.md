@@ -1,3 +1,15 @@
+## [2026-09-08] - Rimozione documento dalla sessione
+
+### Aggiunto
+- `POST /api/remove-doc`: rimuove un documento specifico da una sessione e ricalcola l'indice FAISS senza di esso; elimina la sessione se era l'ultimo documento
+- `docs_raw` per sessione: mantiene i chunk originali di ogni documento (per `doc_id`) per permettere il ricalcolo dell'indice dopo una rimozione
+- `README.md`: documentato il nuovo endpoint `/api/remove-doc` e il campo `doc_id` restituito da `/api/upload`
+
+### Modificato
+- `.gitignore`: aggiunto `*.log`
+
+---
+
 ## [2026-09-07] - Corretto modello Groq deprecato
 
 ### Corretto
